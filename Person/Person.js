@@ -1,5 +1,5 @@
 class Person {
-  constructor() {
+  constructor(teamID) {
     this.position = createVector(random(width / 5, 4 * width / 5), random(height / 5, 4 * height / 5));
     this.velocity = createVector(0, 0);
     this.acceleration = createVector(0, 0);
@@ -8,23 +8,28 @@ class Person {
     this.size = 20;
     this.activated = false;
     this.id = idCounter ++;
+    this.teamID = teamID;
     this.bullets = new Array();
     this.fireCounter = -1;
     /* Extended classes must define:
-      color, damage, health, fullHealth, cooldown
+      color, damage, health, fullHealth, cooldown, bulletWillHit (function)
     */
   }
 
+  bulletWillHit(personID, bulletID) {
+    return(personID != bulletID);
+  }
+
   shot() {
-    this.bullets.push(new Bullet(this.position.copy(), this.angle, this.id, this.damage));
+    this.bullets.push(new Bullet(this.position.copy(), this.angle, this.id, this.teamID, this.damage, this.bulletWillHit));
   }
 
   getMovements() {
     if (this.activated) this.angle = atan2(mouseY - this.position.y, mouseX - this.position.x);
     
     if (mouseIsPressed) {
-      if (this.activated && mouseButton === LEFT && (++ this.fireCounter) % this.cooldown == 0)
-        this.shot();
+      if (this.activated && mouseButton === LEFT && this.fireCounter == 0)
+        this.shot(), this.fireCounter ++;
 
       if (mouseButton === CENTER &&
           this.position.x - this.size*1.1 <= mouseX && mouseX <= this.position.x + this.size*1.1 &&
@@ -48,6 +53,8 @@ class Person {
   }
 
   update() {
+    if (this.fireCounter % this.cooldown == 0) this.fireCounter = 0;
+    else this.fireCounter ++;
     this.getMovements();
     for (var i = 0; i < this.bullets.length; i ++)
       this.bullets[i].update();
@@ -71,6 +78,8 @@ class Person {
       fill(255, 0, 0);
       let healthPorcentage = (this.fullHealth - this.health) / this.fullHealth;
       rect(-this.size, 40 / 2 - (40 * healthPorcentage), 10, 40 * healthPorcentage);
+      fill(255, 255, 255); textSize(this.size);
+      rotate(Math.PI / 2); text(this.teamID, -this.size / 3, 0);
     pop();
     for (var i = 0; i < this.bullets.length; i ++) {
       this.bullets[i].display();

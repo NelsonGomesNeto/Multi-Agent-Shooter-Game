@@ -5,8 +5,12 @@ var idCounter = 0;
 function setup() {
   createCanvas(1000, 600);
   people = new Array();
-  for (var i = 0; i < 10; i ++) people.push(new Shooter());
-  for (var i = 0; i < 5; i ++) people.push(new Healer());
+  for (var j = 1; j <= 2; j ++)
+    for (var i = 0; i < 2; i ++)
+    {
+      people.push(new Shooter(j));
+      people.push(new Healer(j));
+    }
 }
 
 function draw() {

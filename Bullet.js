@@ -1,12 +1,14 @@
 class Bullet {
-  constructor(startPosition, angle, id, damage) {
+  constructor(startPosition, angle, personID, teamID, damage, bulletWillHit) {
     this.position = startPosition;
     this.velocity = createVector(10, 0);
     this.angle = angle;
     this.velocity.rotate(this.angle);
     this.isOffScreen = false;
-    this.id = id;
+    this.personID = personID;
+    this.teamID = teamID;
     this.damage = damage;
+    this.bulletWillHit = bulletWillHit;
   }
 
   update() {
@@ -15,7 +17,7 @@ class Bullet {
       this.isOffScreen = true;
     if (!this.isOffScreen)
       for (var i = 0; i < people.length; i ++)
-        if (people[i].id != this.id
+        if (people[i].id != this.personID && this.bulletWillHit(people[i].teamID, this.teamID)
             && people[i].position.x - people[i].size <= this.position.x 
             && this.position.x <= people[i].position.x + people[i].size
             && people[i].position.y - people[i].size <= this.position.y 
