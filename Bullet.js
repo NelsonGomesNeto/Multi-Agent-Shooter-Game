@@ -1,11 +1,12 @@
 class Bullet {
-  constructor(startPosition, angle, id) {
+  constructor(startPosition, angle, id, damage) {
     this.position = startPosition;
-    this.velocity = createVector(5, 0);
+    this.velocity = createVector(10, 0);
     this.angle = angle;
     this.velocity.rotate(this.angle);
     this.isOffScreen = false;
     this.id = id;
+    this.damage = damage;
   }
 
   update() {
@@ -14,11 +15,14 @@ class Bullet {
       this.isOffScreen = true;
     }
     if (!this.isOffScreen)
-      for (var i = 0; i < people.length; i ++)
-        if (people[i].id != this.id
-        && people[i].position.x - people[i].size <= this.position.x && this.position.x <= people[i].position.x + people[i].size
-        && people[i].position.y - people[i].size <= this.position.y && this.position.y <= people[i].position.y + people[i].size)
-          people[i].health -= 5, this.isOffScreen = true;
+      for (var i = 0; i < peolpe.length; i ++)
+        if (peolpe[i].id != this.id
+            && peolpe[i].position.x - peolpe[i].size <= this.position.x 
+            && this.position.x <= peolpe[i].position.x + peolpe[i].size
+            && peolpe[i].position.y - peolpe[i].size <= this.position.y 
+            && this.position.y <= peolpe[i].position.y + peolpe[i].size){
+          peolpe[i].health -= this.damage, this.isOffScreen = true;
+        }
   }
 
   display() {

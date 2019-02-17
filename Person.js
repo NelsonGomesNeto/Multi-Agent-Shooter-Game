@@ -1,26 +1,49 @@
 class Person {
-  constructor() {
+
+  constructor(kind) {
     this.position = createVector(random(width / 5, 4 * width / 5), random(height / 5, 4 * height / 5));
     this.velocity = createVector(0, 0);
     this.acceleration = createVector(0, 0);
     this.angle = 0;
     this.topSpeed = 2;
-    this.color = color(random(0, 255), random(0, 255), random(0, 255));
+    this.kind = kind;
     this.size = 20;
     this.activated = false;
     this.id = idCounter ++;
-    this.health = maxHealth;
     this.bullets = new Array();
+    this.lastShot = 0;
+
+    if (kind === 1) {
+      this.color = color(255, 255, 255);
+      this.damage = 5;
+      this.health = maxHealth;
+      this.timeShot = 150;
+
+    }else{
+      this.color = color(55, 55, 55);
+      this.damage = 12;
+      this.health = 1.5 * maxHealth;
+      this.timeShot = 400;
+    }
   }
 
   shot(angle) {
-    this.bullets.push(new Bullet(this.position.copy(), angle, this.id));
+    this.bullets.push(new Bullet(this.position.copy(), angle, this.id, this.damage));
   }
 
   getMovements() {
     if (this.activated) this.angle = atan2(mouseY - this.position.y, mouseX - this.position.x);
+    
     if (mouseIsPressed) {
-      if (this.activated && mouseButton === LEFT) this.shot(this.angle);
+
+      if (this.activated && mouseButton === LEFT) {
+            if (this.lastShot == 0 ||
+                this.lastShot + this.timeShot < new Date().getTime()) {
+                this.shot(this.angle);
+                this.lastShot = new Date().getTime();
+              }
+      } 
+
       if (mouseButton === CENTER &&
           this.position.x - this.size*1.1 <= mouseX && mouseX <= this.position.x + this.size*1.1 &&
           this.position.y - this.size*1.1 <= mouseY && mouseY <= this.position.y + this.size*1.1)
