@@ -1,48 +1,30 @@
 class Person {
-
-  constructor(kind) {
+  constructor() {
     this.position = createVector(random(width / 5, 4 * width / 5), random(height / 5, 4 * height / 5));
     this.velocity = createVector(0, 0);
     this.acceleration = createVector(0, 0);
     this.angle = 0;
     this.topSpeed = 2;
-    this.kind = kind;
     this.size = 20;
     this.activated = false;
     this.id = idCounter ++;
     this.bullets = new Array();
-    this.lastShot = 0;
-
-    if (kind === 1) {
-      this.color = color(255, 255, 255);
-      this.damage = 5;
-      this.health = maxHealth;
-      this.timeShot = 150;
-
-    }else{
-      this.color = color(55, 55, 55);
-      this.damage = 12;
-      this.health = 1.5 * maxHealth;
-      this.timeShot = 400;
-    }
+    this.fireCounter = -1;
+    /* Extended classes must define:
+      color, damage, health, fullHealth, cooldown
+    */
   }
 
-  shot(angle) {
-    this.bullets.push(new Bullet(this.position.copy(), angle, this.id, this.damage));
+  shot() {
+    this.bullets.push(new Bullet(this.position.copy(), this.angle, this.id, this.damage));
   }
 
   getMovements() {
     if (this.activated) this.angle = atan2(mouseY - this.position.y, mouseX - this.position.x);
     
     if (mouseIsPressed) {
-
-      if (this.activated && mouseButton === LEFT) {
-            if (this.lastShot == 0 ||
-                this.lastShot + this.timeShot < new Date().getTime()) {
-                this.shot(this.angle);
-                this.lastShot = new Date().getTime();
-              }
-      } 
+      if (this.activated && mouseButton === LEFT && (++ this.fireCounter) % this.cooldown == 0)
+        this.shot();
 
       if (mouseButton === CENTER &&
           this.position.x - this.size*1.1 <= mouseX && mouseX <= this.position.x + this.size*1.1 &&
@@ -87,7 +69,7 @@ class Person {
       fill(0, 255, 0);
       rect(-this.size, -20, 10, 40);
       fill(255, 0, 0);
-      let healthPorcentage = (maxHealth - this.health) / maxHealth;
+      let healthPorcentage = (this.fullHealth - this.health) / this.fullHealth;
       rect(-this.size, 40 / 2 - (40 * healthPorcentage), 10, 40 * healthPorcentage);
     pop();
     for (var i = 0; i < this.bullets.length; i ++) {
@@ -95,6 +77,5 @@ class Person {
       if (this.bullets[i].isOffScreen) this.bullets.splice(i --, 1);
     }
     fill(255, 255, 255);
-    text(this.bullets.length, 0, height - 10);
   }
 }

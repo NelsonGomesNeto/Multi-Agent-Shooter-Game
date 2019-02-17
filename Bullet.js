@@ -11,17 +11,17 @@ class Bullet {
 
   update() {
     this.position.add(this.velocity);
-    if (this.position.x < 0 || this.position.x > width || this.position.y < 0 || this.position.y > height) {
+    if (this.position.x < 0 || this.position.x > width || this.position.y < 0 || this.position.y > height)
       this.isOffScreen = true;
-    }
     if (!this.isOffScreen)
-      for (var i = 0; i < peolpe.length; i ++)
-        if (peolpe[i].id != this.id
-            && peolpe[i].position.x - peolpe[i].size <= this.position.x 
-            && this.position.x <= peolpe[i].position.x + peolpe[i].size
-            && peolpe[i].position.y - peolpe[i].size <= this.position.y 
-            && this.position.y <= peolpe[i].position.y + peolpe[i].size){
-          peolpe[i].health -= this.damage, this.isOffScreen = true;
+      for (var i = 0; i < people.length; i ++)
+        if (people[i].id != this.id
+            && people[i].position.x - people[i].size <= this.position.x 
+            && this.position.x <= people[i].position.x + people[i].size
+            && people[i].position.y - people[i].size <= this.position.y 
+            && this.position.y <= people[i].position.y + people[i].size) {
+          people[i].health -= this.damage, this.isOffScreen = true;
+          people[i].health = min(people[i].health, people[i].fullHealth);
         }
   }
 
