@@ -1,9 +1,10 @@
 class Person {
   constructor(teamID) {
-    // if (teamID == 1) 
-      this.position = createVector(random(width / 6, 5 * width / 6), random(height / 8, 7 * height / 8));
-    // else
-      // this.position = createVector(random(width - 2 * width / 6, width - width / 6), random(height / 8, 7 * height / 8));
+    if (teamID === 1)
+      this.position = createVector(random(0, spawnSize), random(0, height));
+      //this.position = createVector(random(width / 6, 5 * width / 6), random(height / 8, 7 * height / 8));
+    else
+      this.position = createVector(random(width - spawnSize, width), random(0, height));
     this.velocity = createVector(0, 0);
     this.acceleration = createVector(0, 0);
     this.angle = 0;
