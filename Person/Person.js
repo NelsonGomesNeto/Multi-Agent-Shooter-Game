@@ -1,6 +1,10 @@
 class Person {
   constructor(teamID) {
-    this.position = createVector(random(width / 5, 4 * width / 5), random(height / 5, 4 * height / 5));
+    this.position = [];
+    if (teamID == 1) 
+      this.position = createVector(random(width / 6, 2 * width / 6), random(height / 8, 7 * height / 8));
+    else
+      this.position = createVector(random(width - 2 * width / 6, width - width / 6), random(height / 8, 7 * height / 8));
     this.velocity = createVector(0, 0);
     this.acceleration = createVector(0, 0);
     this.angle = 0;
@@ -56,7 +60,7 @@ class Person {
     if (this.fireCounter % this.cooldown == 0) this.fireCounter = 0;
     else this.fireCounter ++;
     this.getMovements();
-    for (var i = 0; i < this.bullets.length; i ++)
+    for (var i = 0; i < this.bullets.length; i++)
       this.bullets[i].update();
     this.velocity.add(this.acceleration);
     this.velocity.limit(this.topSpeed);
@@ -81,10 +85,13 @@ class Person {
       fill(255, 255, 255); textSize(this.size);
       rotate(Math.PI / 2); text(this.teamID, -this.size / 3, 0);
     pop();
-    for (var i = 0; i < this.bullets.length; i ++) {
+
+    for (var i = 0; i < this.bullets.length; i++) {
       this.bullets[i].display();
-      if (this.bullets[i].isOffScreen) this.bullets.splice(i --, 1);
+      if (this.bullets[i].isOffScreen) 
+        this.bullets.splice(i--, 1);
     }
+
     fill(255, 255, 255);
   }
 }
