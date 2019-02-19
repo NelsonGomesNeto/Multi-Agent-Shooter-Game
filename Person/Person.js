@@ -106,21 +106,29 @@ class Person {
     this.checkEdges();
   }
 
+  drawLifeBar() {
+    push();
+      translate(0, 10);
+      rotate(-Math.PI / 2);
+      fill(0, 255, 0);
+      rect(-this.size, -this.size, this.size / 2, 2 * this.size);
+      fill(255, 0, 0);
+      let healthPorcentage = (this.fullHealth - this.health) / this.fullHealth;
+      rect(-this.size, this.size - (2 * this.size * healthPorcentage), this.size / 2, 2 * this.size * healthPorcentage);
+    pop();
+  }
+
   display() {
     let i;
     push();
       translate(this.position.x, this.position.y);
+      this.drawLifeBar();
       rotate(this.angle);
       fill(this.color);
       ellipse(0, 0, this.size, this.size);
       triangle(0, 0 - this.size,
                0 + this.size, 0,
                0, 0 + this.size);
-      fill(0, 255, 0);
-      rect(-this.size, -this.size, this.size / 2, 2 * this.size);
-      fill(255, 0, 0);
-      let healthPorcentage = (this.fullHealth - this.health) / this.fullHealth;
-      rect(-this.size, this.size - (2 * this.size * healthPorcentage), this.size / 2, 2 * this.size * healthPorcentage);
       fill(255, 255, 255); textSize(this.size);
       rotate(Math.PI / 2); text(this.teamID, -this.size / 3, 0);
     pop();
