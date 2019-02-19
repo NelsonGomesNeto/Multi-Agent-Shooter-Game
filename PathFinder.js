@@ -13,7 +13,7 @@ class PathFinder {
   }
 
   invalid(i, j) {
-    return(i < 0 || j < 0 || i >= lines || j >= columns || this.visited[i][j] || gameMap[i][j]);
+    return(i < 0 || j < 0 || i >= lines || j >= columns || this.visited[i][j] || gameMap.matrix[i][j]);
   }
 
   findPath() {
