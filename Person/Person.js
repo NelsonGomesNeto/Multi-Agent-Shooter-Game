@@ -14,6 +14,7 @@ class Person {
     this.id = idCounter ++;
     this.teamID = teamID;
     this.bullets = new Array();
+    this.healings = new Array();
     this.fireCounter = -1;
     /* Extended classes must define:
       color, damage, health, fullHealth, cooldown, bulletWillHit (function)
@@ -28,17 +29,30 @@ class Person {
     this.bullets.push(new Bullet(this.position.copy(), this.angle, this.id, this.teamID, this.damage, this.bulletWillHit));
   }
 
+  heal(){
+    this.healings.push(new Healing(this.position.copy(), this.id, this.teamID));
+  }
+
   getMovements() {
     if (this.activated) this.angle = atan2(mouseY - this.position.y, mouseX - this.position.x);
     
     if (mouseIsPressed) {
-      if (this.activated && mouseButton === LEFT && this.fireCounter == 0)
+      if (this.activated && mouseButton === LEFT && this.fireCounter == 0){
         this.shot(), this.fireCounter ++;
+      }
 
       if (mouseButton === CENTER &&
           this.position.x - this.size*1.1 <= mouseX && mouseX <= this.position.x + this.size*1.1 &&
-          this.position.y - this.size*1.1 <= mouseY && mouseY <= this.position.y + this.size*1.1)
+          this.position.y - this.size*1.1 <= mouseY && mouseY <= this.position.y + this.size*1.1){
         this.activated = !this.activated, mouseButton = -1;
+      }
+
+      if (this.activated && mouseButton === RIGHT && this.id % 2 != 0 &&
+          this.position.x - this.size*1.1 <= mouseX && mouseX <= this.position.x + this.size*1.1 &&
+          this.position.y - this.size*1.1 <= mouseY && mouseY <= this.position.y + this.size*1.1) {
+        this.heal();
+      }
+
     }
     if (this.activated && keyIsPressed) {
       this.acceleration.set((true===keyIsDown(RIGHT_ARROW)) - (true===keyIsDown(LEFT_ARROW)),
@@ -60,8 +74,12 @@ class Person {
     if (this.fireCounter % this.cooldown == 0) this.fireCounter = 0;
     else this.fireCounter ++;
     this.getMovements();
+    
     for (var i = 0; i < this.bullets.length; i++)
       this.bullets[i].update();
+    for (var i = 0; i < this.healings.length; i++)
+      this.healings[i].update(this.position);
+
     this.velocity.add(this.acceleration);
     this.velocity.limit(this.topSpeed);
     this.position.add(this.velocity);
@@ -91,6 +109,12 @@ class Person {
       if (this.bullets[i].isOffScreen) 
         this.bullets.splice(i--, 1);
     }
+
+    for (var i = 0; i < this.healings.length; i++) {
+      this.healings[i].display();
+      if (this.healings[i].empty) 
+        this.healings.splice(i--, 1);
+    }    
 
     fill(255, 255, 255);
   }

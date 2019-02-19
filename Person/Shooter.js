@@ -7,8 +7,4 @@ class Shooter extends Person {
     this.fullHealth = this.health;
     this.cooldown = 10;
   }
-
-  bulletWillHit(personID, bulletID) {
-    return(personID != bulletID);
-  }
 }
