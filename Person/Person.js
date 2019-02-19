@@ -32,10 +32,6 @@ class Person {
     this.bullets.push(new Bullet(this.position.copy(), this.angle, this.id, this.teamID, this.damage, Person.bulletWillHit));
   }
 
-  heal(){
-    this.healings.push(new Healing(this.position.copy(), this.id, this.teamID));
-  }
-
   getMovements() {
     if (this.activated) this.angle = atan2(mouseY - this.position.y, mouseX - this.position.x);
     
@@ -50,13 +46,6 @@ class Person {
           this.position.y - this.size*1.1 <= mouseY && mouseY <= this.position.y + this.size*1.1){
         this.activated = !this.activated, mouseButton = -1;
       }
-
-      if (this.activated && mouseButton === RIGHT && this.id % 2 !== 0 &&
-          this.position.x - this.size*1.1 <= mouseX && mouseX <= this.position.x + this.size*1.1 &&
-          this.position.y - this.size*1.1 <= mouseY && mouseY <= this.position.y + this.size*1.1) {
-        this.heal();
-      }
-
     }
     if (this.activated && keyIsPressed) {
       this.acceleration.set((true===keyIsDown(RIGHT_ARROW)) - (true===keyIsDown(LEFT_ARROW)),
@@ -91,13 +80,13 @@ class Person {
 
   update() {
     let i;
-      if (this.fireCounter % this.cooldown === 0) this.fireCounter = 0;
+    if (this.fireCounter % this.cooldown === 0) this.fireCounter = 0;
     else this.fireCounter ++;
     if (this.teamID === 1) this.getMovements();
     else this.followPath();
-    for (i = 0; i < this.bullets.length; i++)
+    for (i = 0; i < this.bullets.length; i ++)
       this.bullets[i].update();
-    for (i = 0; i < this.healings.length; i++)
+    for (i = 0; i < this.healings.length; i ++)
       this.healings[i].update(this.position);
 
     this.velocity.add(this.acceleration);
@@ -138,13 +127,5 @@ class Person {
       if (this.bullets[i].isOffScreen) 
         this.bullets.splice(i--, 1);
     }
-
-    for (i = 0; i < this.healings.length; i++) {
-      this.healings[i].display();
-      if (this.healings[i].empty) 
-        this.healings.splice(i--, 1);
-    }    
-
-    fill(255, 255, 255);
   }
 }

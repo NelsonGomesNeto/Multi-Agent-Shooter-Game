@@ -9,6 +9,7 @@ let spawnSize = canvasWidth/10;
 let spawnRedColor;
 let spawnBlueColor;
 let backgroundColor;
+var gameMap;
 
 var lineSize, columnSize;
 var people;
@@ -26,6 +27,12 @@ function setup() {
       people.push(new Shooter(j));
       people.push(new Healer(j));
     }
+  gameMap = new Array(lines);
+  for (var i = 0; i < lines; i ++) {
+    gameMap[i] = new Array(columns);
+    for (var j = 0; j < lines; j ++)
+      gameMap[i][j] = false;
+  }
 }
 
 function drawSpawnZone() {
