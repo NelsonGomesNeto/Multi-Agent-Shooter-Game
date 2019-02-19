@@ -75,7 +75,7 @@ class Person {
   }
 
   followPath() {
-    let i = int(this.position.y / columnSize), j = int(this.position.x / lineSize);
+    let i = int(this.position.y / lineSize), j = int(this.position.x / columnSize);
     if (!this.path || this.pathID >= (this.path.length - 1)) {
       this.path = new PathFinder(this.position.copy(), createVector(random(0, width - 100), random(0, height - 100))).findPath();
       this.pathID = -1;
@@ -108,7 +108,7 @@ class Person {
 
   display() {
     let i;
-      push();
+    push();
       translate(this.position.x, this.position.y);
       rotate(this.angle);
       fill(this.color);

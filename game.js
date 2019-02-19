@@ -19,7 +19,7 @@ function setup() {
   spawnBlueColor = color(111, 168, 220);
   backgroundColor = color(200, 200, 200);
   createCanvas(canvasWidth, canvasHeight);
-  lineSize = ((width - 1) / lines), columnSize = ((height - 1) / columns);
+  lineSize = ((height - 1) / lines), columnSize = ((width - 1) / columns);
   people = [];
   for (let j = 1; j <= teamNumber; j ++)
     for (let i = 0; i < teamSize; i ++) {
@@ -46,8 +46,8 @@ function draw() {
   background(backgroundColor);
   drawSpawnZone();
 
-  for (i = 0; i <= lines; i ++) line(0, i * columnSize, width, i * columnSize);
-  for (i = 0; i <= columns; i ++) line(i * lineSize, 0, i * lineSize, height);
+  for (i = 0; i <= lines; i ++) line(0, i * lineSize, width, i * lineSize);
+  for (i = 0; i <= columns; i ++) line(i * columnSize, 0, i * columnSize, height);
 
   for (i = 0; i < people.length; i ++) {
     if (people[i].health <= 0) {

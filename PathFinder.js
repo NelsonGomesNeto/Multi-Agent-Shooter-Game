@@ -17,8 +17,8 @@ class PathFinder {
   }
 
   findPath() {
-      const queue = new Queue();
-      queue.push([this.origin, []]);
+    var queue = new Queue();
+    queue.push([this.origin, []]);
     while (!queue.empty()) {
       var u = queue.pop();
       if (u[0].equal(this.destination)) return(u[1]);
