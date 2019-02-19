@@ -1,9 +1,7 @@
 class Person {
   constructor(teamID) {
-    // this.position = [];
     // if (teamID == 1) 
       this.position = createVector(random(width / 6, 5 * width / 6), random(height / 8, 7 * height / 8));
-      console.log(this.position);
     // else
       // this.position = createVector(random(width - 2 * width / 6, width - width / 6), random(height / 8, 7 * height / 8));
     this.velocity = createVector(0, 0);
@@ -19,9 +17,7 @@ class Person {
     this.fireCounter = -1;
     this.pathID = 1;
     this.path = false;
-    this.timestamp = 0;
     this.target = new Position(-1, -1);
-    this.fuck = false;
     /* Extended classes must define:
       color, damage, health, fullHealth, cooldown, bulletWillHit (function)
     */
@@ -78,22 +74,16 @@ class Person {
 
   followPath() {
     let i = int(this.position.y / columnSize), j = int(this.position.x / lineSize);
-    if (!this.fuck && (!this.path || this.pathID >= this.path.length)) {
+    if (!this.path || this.pathID >= (this.path.length - 1)) {
       this.path = new PathFinder(this.position.copy(), createVector(random(0, width - 100), random(0, height - 100))).findPath();
       this.pathID = -1;
-      this.fuck = true;
-      fill(255, 255, 255);
-      // console.log(this.path[0]);
-      // console.log(this.path[this.path.length - 1]);
-      console.log(this.path);
     } else if (this.pathID >= 0 && (i != this.target.i || j != this.target.j)) {
-      this.position.set(this.target.j * lineSize + lineSize / 2, this.target.i * columnSize + columnSize / 2);
-    } else if (this.path && (this.timestamp ++) == followPathRate && this.pathID < this.path.length - 1) {
+      this.velocity.set(this.topSpeed, 0);
+      this.angle = atan2(this.target.i - i, this.target.j - j);
+      this.velocity.rotate(this.angle);
+    } else if (this.path && this.pathID < this.path.length - 1) {
       this.pathID ++;
       this.target.i = this.path[this.pathID].i, this.target.j = this.path[this.pathID].j;
-      console.log("was: " + this.position.x + " " + this.position.y + " -- " + (this.target.j) * columnSize + " " + (this.target.i * lineSize))
-      this.timestamp = 0;
-      // console.log(i + " " + j + " || " + this.path[this.pathID].i + " " + this.path[this.pathID].j);
     }
   }
 
