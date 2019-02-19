@@ -9,6 +9,6 @@ class Queue {
     return(this.data.shift());
   }
   empty() {
-    return(this.data.length == 0);
+    return(this.data.length === 0);
   }
 }

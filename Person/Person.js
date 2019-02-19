@@ -12,8 +12,8 @@ class Person {
     this.activated = false;
     this.id = idCounter ++;
     this.teamID = teamID;
-    this.bullets = new Array();
-    this.healings = new Array();
+    this.bullets = [];
+    this.healings = [];
     this.fireCounter = -1;
     this.pathID = 1;
     this.path = false;
@@ -23,12 +23,12 @@ class Person {
     */
   }
 
-  bulletWillHit(personID, bulletID) {
-    return(personID != bulletID);
+  static bulletWillHit(personID, bulletID) {
+    return(personID !== bulletID);
   }
 
   shot() {
-    this.bullets.push(new Bullet(this.position.copy(), this.angle, this.id, this.teamID, this.damage, this.bulletWillHit));
+    this.bullets.push(new Bullet(this.position.copy(), this.angle, this.id, this.teamID, this.damage, Person.bulletWillHit));
   }
 
   heal(){
@@ -39,8 +39,9 @@ class Person {
     if (this.activated) this.angle = atan2(mouseY - this.position.y, mouseX - this.position.x);
     
     if (mouseIsPressed) {
-      if (this.activated && mouseButton === LEFT && this.fireCounter == 0){
-        this.shot(), this.fireCounter ++;
+      if (this.activated && mouseButton === LEFT && this.fireCounter === 0){
+        this.shot();
+        this.fireCounter ++;
       }
 
       if (mouseButton === CENTER &&
@@ -49,7 +50,7 @@ class Person {
         this.activated = !this.activated, mouseButton = -1;
       }
 
-      if (this.activated && mouseButton === RIGHT && this.id % 2 != 0 &&
+      if (this.activated && mouseButton === RIGHT && this.id % 2 !== 0 &&
           this.position.x - this.size*1.1 <= mouseX && mouseX <= this.position.x + this.size*1.1 &&
           this.position.y - this.size*1.1 <= mouseY && mouseY <= this.position.y + this.size*1.1) {
         this.heal();
@@ -77,7 +78,7 @@ class Person {
     if (!this.path || this.pathID >= (this.path.length - 1)) {
       this.path = new PathFinder(this.position.copy(), createVector(random(0, width - 100), random(0, height - 100))).findPath();
       this.pathID = -1;
-    } else if (this.pathID >= 0 && (i != this.target.i || j != this.target.j)) {
+    } else if (this.pathID >= 0 && (i !== this.target.i || j !== this.target.j)) {
       this.velocity.set(this.topSpeed, 0);
       this.angle = atan2(this.target.i - i, this.target.j - j);
       this.velocity.rotate(this.angle);
@@ -88,13 +89,14 @@ class Person {
   }
 
   update() {
-    if (this.fireCounter % this.cooldown == 0) this.fireCounter = 0;
+    let i;
+      if (this.fireCounter % this.cooldown === 0) this.fireCounter = 0;
     else this.fireCounter ++;
-    if (this.teamID == 1) this.getMovements();
+    if (this.teamID === 1) this.getMovements();
     else this.followPath();
-    for (var i = 0; i < this.bullets.length; i++)
+    for (i = 0; i < this.bullets.length; i++)
       this.bullets[i].update();
-    for (var i = 0; i < this.healings.length; i++)
+    for (i = 0; i < this.healings.length; i++)
       this.healings[i].update(this.position);
 
     this.velocity.add(this.acceleration);
@@ -104,7 +106,8 @@ class Person {
   }
 
   display() {
-    push();
+    let i;
+      push();
       translate(this.position.x, this.position.y);
       rotate(this.angle);
       fill(this.color);
@@ -121,13 +124,13 @@ class Person {
       rotate(Math.PI / 2); text(this.teamID, -this.size / 3, 0);
     pop();
 
-    for (var i = 0; i < this.bullets.length; i++) {
+    for (i = 0; i < this.bullets.length; i++) {
       this.bullets[i].display();
       if (this.bullets[i].isOffScreen) 
         this.bullets.splice(i--, 1);
     }
 
-    for (var i = 0; i < this.healings.length; i++) {
+    for (i = 0; i < this.healings.length; i++) {
       this.healings[i].display();
       if (this.healings[i].empty) 
         this.healings.splice(i--, 1);

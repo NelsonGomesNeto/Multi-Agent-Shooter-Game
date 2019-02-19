@@ -26,8 +26,8 @@ class Healing {
       this.empty = true;
 
     if (!this.empty)
-      for (var i = 0; i < people.length; i ++)
-        if (people[i].id != this.personID && people[i].teamID == this.teamID
+      for (let i = 0; i < people.length; i ++)
+        if (people[i].id !== this.personID && people[i].teamID === this.teamID
             && people[i].position.x - people[i].size + 15 <= this.position.x 
             && this.position.x <= people[i].position.x + people[i].size + 15
             && people[i].position.y - people[i].size + 15 <= this.position.y 

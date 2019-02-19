@@ -5,9 +5,9 @@ class PathFinder {
     this.origin = new Position(int(origin.y / lineSize), int(origin.x / columnSize));
     this.destination = new Position(int(destination.y / lineSize), int(destination.x / columnSize));
     this.visited = new Array(lines);
-    for (var i = 0; i < lines; i ++) {
+    for (let i = 0; i < lines; i ++) {
       this.visited[i] = new Array(columns);
-      for (var j = 0; j < columns; j ++)
+      for (let j = 0; j < columns; j ++)
         this.visited[i][j] = false;
     }
   }
@@ -17,8 +17,8 @@ class PathFinder {
   }
 
   findPath() {
-    var queue = new Queue();
-    queue.push([this.origin, []]);
+      const queue = new Queue();
+      queue.push([this.origin, []]);
     while (!queue.empty()) {
       var u = queue.pop();
       if (u[0].equal(this.destination)) return(u[1]);
