@@ -89,7 +89,7 @@ class Person {
     var position = this.position.copy();
     while (this.validPosition(position)) {
       let i = min(int(position.y / lineSize), lines - 1), j = min(int(position.x / columnSize), columns - 1);
-      if (gameMap.peopleInMatrix[i][j] && gameMap.peopleInMatrix[i][j] != this.id) {
+      if (gameMap.peopleInMatrix[i][j] && gameMap.peopleInMatrix[i][j] != this.id && gameMap.teamInMatrix[i][j] != this.teamID) {
         if (this.enemiesAhead.length >= 5) this.enemiesAhead.shift();
         this.enemiesAhead.push(position.copy());
       }
@@ -105,6 +105,16 @@ class Person {
     }
   }
 
+  atack() {
+    if (this.enemiesAhead.length) {
+      let chosen = int(random(0, this.enemiesAhead.length - 1));
+      let prevAngle = this.angle;
+      this.angle = atan2(this.enemiesAhead[chosen].y - this.position.y, this.enemiesAhead[chosen].x - this.position.x);
+      if (this.fireCounter % this.cooldown == 0) this.shot();
+      this.angle = prevAngle;
+    }
+  }
+
   update() {
     let i;
     if ((++ this.fireCounter) % this.cooldown == 0) this.fireCounter = 0;
@@ -112,11 +122,13 @@ class Person {
     if ((++ this.fieldOfViewCounter) % fieldOfViewCooldown == 0) {
       this.findEnemiesAhead();
       this.fieldOfViewCounter = 0;
-      // console.log(this.enemiesAhead);
     }
 
     if (this.teamID === 1) this.getMovements();
-    else this.followPath();
+    else {
+      this.followPath();
+      this.atack();
+    }
 
     for (i = 0; i < this.bullets.length; i ++)
       this.bullets[i].update();
@@ -131,6 +143,7 @@ class Person {
     let y = min(int(this.position.y / lineSize), lines - 1), x = min(int(this.position.x / columnSize), columns - 1);
     if (gameMap.matrix[y][x]) this.position.sub(this.velocity);
     gameMap.peopleInMatrix[y][x] = this.id;
+    gameMap.teamInMatrix[y][x] = this.teamID;
     this.checkEdges();
   }
 
