@@ -109,12 +109,18 @@ class Person {
     pop();
   }
 
+  drawFieldOfView() {
+    fill(255, 0, 0, 50);
+    arc(0, 0, max(width, height), max(width, height), -PI/10, PI/10, PIE);
+  }
+
   display() {
     let i;
     push();
       translate(this.position.x, this.position.y);
       this.drawLifeBar();
       rotate(this.angle);
+      this.drawFieldOfView();
       fill(this.color);
       ellipse(0, 0, this.size, this.size);
       triangle(0, 0 - this.size,
