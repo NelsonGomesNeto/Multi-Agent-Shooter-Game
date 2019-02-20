@@ -14,7 +14,7 @@ class Healer extends Person {
 
   getMovements() {
     super.getMovements();
-    if (mouseIsPressed && this.activated && mouseButton === RIGHT && this.id % 2 !== 0 &&
+    if (mouseIsPressed && this.activated && mouseButton === RIGHT &&
         this.position.x - this.size*1.1 <= mouseX && mouseX <= this.position.x + this.size*1.1 &&
         this.position.y - this.size*1.1 <= mouseY && mouseY <= this.position.y + this.size*1.1)
       this.heal();
