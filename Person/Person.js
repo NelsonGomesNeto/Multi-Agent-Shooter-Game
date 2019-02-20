@@ -48,8 +48,8 @@ class Person {
       }
     }
     if (this.activated && keyIsPressed) {
-      this.acceleration.set((true===keyIsDown(RIGHT_ARROW)) - (true===keyIsDown(LEFT_ARROW)),
-                            (true===keyIsDown(DOWN_ARROW)) - (true===keyIsDown(UP_ARROW)));
+      this.acceleration.set((true===keyIsDown(aKey)) - (true===keyIsDown(dKey)),
+                            (true===keyIsDown(sKey)) - (true===keyIsDown(wKey)));
       this.acceleration.rotate(this.angle + Math.PI / 2);
     } else {
       this.velocity.mult(0), this.acceleration.mult(0);
@@ -92,6 +92,8 @@ class Person {
     this.velocity.add(this.acceleration);
     this.velocity.limit(this.topSpeed);
     this.position.add(this.velocity);
+    let y = min(int(this.position.y / lineSize), lines - 1), x = min(int(this.position.x / columnSize), columns - 1);
+    if (gameMap.matrix[y][x]) this.position.sub(this.velocity);
     this.checkEdges();
   }
 

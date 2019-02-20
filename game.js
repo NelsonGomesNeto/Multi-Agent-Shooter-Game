@@ -10,6 +10,7 @@ let spawnRedColor;
 let spawnBlueColor;
 let backgroundColor;
 var gameMap;
+let aKey = 65, dKey = 68, sKey = 83, wKey = 87;
 
 var lineSize, columnSize;
 var people;
