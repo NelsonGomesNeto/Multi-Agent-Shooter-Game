@@ -11,10 +11,11 @@ let spawnBlueColor;
 let backgroundColor;
 var gameMap;
 let aKey = 65, dKey = 68, sKey = 83, wKey = 87;
+let bulletsInFieldOfView = 20, fieldOfViewAngle = Math.PI / 10, fieldOfViewCooldown = 20;
 
 var lineSize, columnSize;
 var people;
-var idCounter = 0;
+var idCounter = 1;
 
 function setup() {
   spawnRedColor = color(224, 102, 102);

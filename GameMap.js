@@ -1,10 +1,14 @@
 class GameMap {
   constructor() {
     this.matrix = new Array(lines);
+    this.peopleInMatrix = new Array(lines);
     for (var i = 0; i < lines; i ++) {
       this.matrix[i] = new Array(columns);
-      for (var j = 0; j < columns; j ++)
+      this.peopleInMatrix[i] = new Array(columns);
+      for (var j = 0; j < columns; j ++) {
         this.matrix[i][j] = false;
+        this.peopleInMatrix[i][j] = 0;
+      }
     }
 
     for (var j = 0; j < columns; j ++)

@@ -16,9 +16,11 @@ class Person {
     this.bullets = [];
     this.healings = [];
     this.fireCounter = -1;
+    this.fieldOfViewCounter = -1;
     this.pathID = 1;
     this.path = false;
     this.target = new Position(-1, -1);
+    this.enemiesAhead = new Array();
     /* Extended classes must define:
       color, damage, health, fullHealth, cooldown, bulletWillHit (function)
     */
@@ -78,22 +80,57 @@ class Person {
     }
   }
 
+  validPosition(position) {
+    let i = min(int(position.y / lineSize), lines - 1), j = min(int(position.x / columnSize), columns - 1);
+    return(position.x >= 0 && position.x < width && position.y >= 0 && position.y < height && !gameMap.matrix[i][j]);
+  }
+
+  lightBeam(direction) {
+    var position = this.position.copy();
+    while (this.validPosition(position)) {
+      let i = min(int(position.y / lineSize), lines - 1), j = min(int(position.x / columnSize), columns - 1);
+      if (gameMap.peopleInMatrix[i][j] && gameMap.peopleInMatrix[i][j] != this.id) {
+        if (this.enemiesAhead.length >= 5) this.enemiesAhead.shift();
+        this.enemiesAhead.push(position.copy());
+      }
+      position.add(direction);
+    }
+  }
+
+  findEnemiesAhead() {
+    for (var i = 1; i <= bulletsInFieldOfView; i ++) {
+      let beam = createVector(10, 0);
+      beam.rotate(this.angle - fieldOfViewAngle + 2*fieldOfViewAngle*(i/bulletsInFieldOfView));
+      this.lightBeam(beam)
+    }
+  }
+
   update() {
     let i;
-    if (this.fireCounter % this.cooldown === 0) this.fireCounter = 0;
-    else this.fireCounter ++;
+    if ((++ this.fireCounter) % this.cooldown == 0) this.fireCounter = 0;
+
+    if ((++ this.fieldOfViewCounter) % fieldOfViewCooldown == 0) {
+      this.findEnemiesAhead();
+      this.fieldOfViewCounter = 0;
+      // console.log(this.enemiesAhead);
+    }
+
     if (this.teamID === 1) this.getMovements();
     else this.followPath();
+
     for (i = 0; i < this.bullets.length; i ++)
       this.bullets[i].update();
     for (i = 0; i < this.healings.length; i ++)
       this.healings[i].update(this.position);
+    // for (i = 0; i < this.enemiesAhead.length; i ++)
+    //   this.enemiesAhead.
 
     this.velocity.add(this.acceleration);
     this.velocity.limit(this.topSpeed);
     this.position.add(this.velocity);
     let y = min(int(this.position.y / lineSize), lines - 1), x = min(int(this.position.x / columnSize), columns - 1);
     if (gameMap.matrix[y][x]) this.position.sub(this.velocity);
+    gameMap.peopleInMatrix[y][x] = this.id;
     this.checkEdges();
   }
 
@@ -111,7 +148,7 @@ class Person {
 
   drawFieldOfView() {
     fill(255, 0, 0, 50);
-    arc(0, 0, max(width, height), max(width, height), -PI/10, PI/10, PIE);
+    arc(0, 0, max(width, height), max(width, height), -fieldOfViewAngle, fieldOfViewAngle, PIE);
   }
 
   display() {
