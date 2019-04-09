@@ -124,9 +124,10 @@ class Person {
       this.fieldOfViewCounter = 0;
     }
 
-    if (this.teamID === 1) this.getMovements();
+    if (this.teamID == 1) this.getMovements();
     else {
       this.followPath();
+      this.healMates();
       this.atack();
     }
 
