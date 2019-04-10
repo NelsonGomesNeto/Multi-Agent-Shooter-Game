@@ -1,10 +1,10 @@
 class Person {
   constructor(teamID) {
     if (teamID === 1)
-      this.position = createVector(random(0, spawnSize), random(0, height));
+      this.position = createVector(random(10, spawnSize), random(0, height));
       //this.position = createVector(random(width / 6, 5 * width / 6), random(height / 8, 7 * height / 8));
     else
-      this.position = createVector(random(width - spawnSize, width), random(0, height));
+      this.position = createVector(random(width - spawnSize - 10, width), random(0, height));
     this.velocity = createVector(0, 0);
     this.acceleration = createVector(0, 0);
     this.angle = 0;
@@ -17,10 +17,12 @@ class Person {
     this.healings = [];
     this.fireCounter = -1;
     this.fieldOfViewCounter = -1;
+    this.followPathCounter = 0;
     this.pathID = 1;
     this.path = false;
     this.target = new Position(-1, -1);
     this.enemiesAhead = new Array();
+    this.isLeader = false;
     /* Extended classes must define:
       color, damage, health, fullHealth, cooldown, bulletWillHit (function)
     */
@@ -67,8 +69,10 @@ class Person {
 
   followPath() {
     let i = int(this.position.y / lineSize), j = int(this.position.x / columnSize);
-    if (!this.path || this.pathID >= (this.path.length - 1)) {
-      this.path = new PathFinder(this.position.copy(), createVector(random(0, width - 100), random(0, height - 100))).findPath();
+    // if (!this.path || this.pathID >= (this.path.length - 1)) {
+    if (!this.path || this.pathID >= (this.path.length - 1) || (++ this.followPathCounter) % followPathCooldown == 0) {
+      let targetPosition = (isTargeting*5 + random(0, 5) > 4) ? backupPosition : createVector(random(0, width - 100), random(0, height - 100));
+      this.path = new PathFinder(this.position.copy(), targetPosition).findPath();
       this.pathID = -1;
     } else if (this.pathID >= 0 && (i !== this.target.i || j !== this.target.j)) {
       this.velocity.set(this.topSpeed, 0);
@@ -78,6 +82,7 @@ class Person {
       this.pathID ++;
       this.target.i = this.path[this.pathID].i, this.target.j = this.path[this.pathID].j;
     }
+    this.followPathCounter %= followPathCooldown;
   }
 
   validPosition(position) {
@@ -98,6 +103,7 @@ class Person {
   }
 
   findEnemiesAhead() {
+    this.enemiesAhead.splice(0, this.enemiesAhead.length);
     for (var i = 1; i <= bulletsInFieldOfView; i ++) {
       let beam = createVector(10, 0);
       beam.rotate(this.angle - fieldOfViewAngle + 2*fieldOfViewAngle*(i/bulletsInFieldOfView));
@@ -105,13 +111,22 @@ class Person {
     }
   }
 
-  atack() {
+  attack() {
     if (this.enemiesAhead.length) {
       let chosen = int(random(0, this.enemiesAhead.length - 1));
       let prevAngle = this.angle;
       this.angle = atan2(this.enemiesAhead[chosen].y - this.position.y, this.enemiesAhead[chosen].x - this.position.x);
       if (this.fireCounter % this.cooldown == 0) this.shot();
       this.angle = prevAngle;
+    }
+  }
+
+  saveLeaderOrder() {
+    backupPosition = this.position.copy();
+    if (this.enemiesAhead.length) {
+      isTargeting = true;
+    } else {
+      isTargeting = false;
     }
   }
 
@@ -128,7 +143,8 @@ class Person {
     else {
       this.followPath();
       this.healMates();
-      this.atack();
+      if (this.isLeader) this.saveLeaderOrder();
+      this.attack();
     }
 
     for (i = 0; i < this.bullets.length; i ++)
@@ -174,6 +190,11 @@ class Person {
       this.drawFieldOfView();
       fill(this.color);
       ellipse(0, 0, this.size, this.size);
+      if (this.isLeader) {
+        fill(255, 255, 0);
+        ellipse(-this.size, 0, this.size / 2, this.size / 2);
+      }
+      fill(this.color);
       triangle(0, 0 - this.size,
                0 + this.size, 0,
                0, 0 + this.size);

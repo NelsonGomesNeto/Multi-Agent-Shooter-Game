@@ -25,11 +25,15 @@ class GameMap {
   }
 
   display() {
-    for (var i = 0; i < lines; i ++) {
-      for (var j = 0; j < columns; j ++) {
+    for (var i = 0; i < lines; i ++)
+      for (var j = 0; j < columns; j ++)
         if (this.matrix[i][j])
           rect(j * columnSize, i * lineSize, columnSize, lineSize);
-      }
-    }
+  }
+
+  clear() {
+    for (var i = 0; i < lines; i ++)
+      for (var j = 0; j < columnSize; j ++)
+        this.peopleInMatrix[i][j] = this.teamInMatrix[i][j] = 0;
   }
 }

@@ -11,11 +11,13 @@ let spawnBlueColor;
 let backgroundColor;
 var gameMap;
 let aKey = 65, dKey = 68, sKey = 83, wKey = 87;
-let bulletsInFieldOfView = 20, fieldOfViewAngle = Math.PI / 10, fieldOfViewCooldown = 20;
+let bulletsInFieldOfView = 20, fieldOfViewAngle = Math.PI / 10, fieldOfViewCooldown = 20, followPathCooldown = 50;
 
 var lineSize, columnSize;
 var people;
 var idCounter = 1;
+
+var AIEnemy, isTargeting = false, backupPosition;
 
 function setup() {
   spawnRedColor = color(224, 102, 102);
@@ -29,6 +31,7 @@ function setup() {
       people.push(new Shooter(j));
       people.push(new Healer(j));
     }
+  updateLeader();
   gameMap = new GameMap();
 }
 
@@ -44,10 +47,19 @@ function drawSpawnZone() {
   pop();
 }
 
+function updateLeader() {
+  for (var i = 0; i < people.length; i ++)
+    if (people[i].teamID == 2) {
+      people[i].isLeader = true;
+      break;
+    }
+}
+
 function draw() {
   
   let i;
   background(backgroundColor);
+  gameMap.clear();
   drawSpawnZone();
 
   for (i = 0; i <= lines; i ++) line(0, i * lineSize, width, i * lineSize);
@@ -56,6 +68,7 @@ function draw() {
   for (i = 0; i < people.length; i ++) {
     if (people[i].health <= 0) {
       people.splice(i --, 1);
+      if (people[i+1].teamID == 2) updateLeader();
       continue;
     }
 
