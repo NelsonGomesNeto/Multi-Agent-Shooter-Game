@@ -28,11 +28,11 @@ class Healing {
     if (!this.empty)
       for (let i = 0; i < people.length; i ++)
         if (people[i].id !== this.personID && people[i].teamID === this.teamID
-            && people[i].position.x - people[i].size + 15 <= this.position.x 
-            && this.position.x <= people[i].position.x + people[i].size + 15
-            && people[i].position.y - people[i].size + 15 <= this.position.y 
-            && this.position.y <= people[i].position.y + people[i].size + 15) {
-          people[i].health += 0.06;
+            && people[i].position.x - people[i].size*2 <= this.position.x 
+            && this.position.x <= people[i].position.x + people[i].size*2
+            && people[i].position.y - people[i].size*2 <= this.position.y 
+            && this.position.y <= people[i].position.y + people[i].size*2) {
+          people[i].health += 0.6;
           people[i].health = min(people[i].health, people[i].fullHealth);
         }
 

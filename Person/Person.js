@@ -52,7 +52,7 @@ class Person {
       }
     }
     if (this.activated && keyIsPressed) {
-      this.acceleration.set((true===keyIsDown(aKey)) - (true===keyIsDown(dKey)),
+      this.acceleration.set((true===keyIsDown(dKey)) - (true===keyIsDown(aKey)),
                             (true===keyIsDown(sKey)) - (true===keyIsDown(wKey)));
       this.acceleration.rotate(this.angle + Math.PI / 2);
     } else {
@@ -123,7 +123,8 @@ class Person {
 
   saveLeaderOrder() {
     backupPosition = this.position.copy();
-    if (this.enemiesAhead.length) {
+    if ((this.health / this.fullHealth) > 0.5 && this.enemiesAhead.length) {
+      backupPosition = this.enemiesAhead[0].copy();
       isTargeting = true;
     } else {
       isTargeting = false;
@@ -143,7 +144,7 @@ class Person {
     else {
       this.followPath();
       this.healMates();
-      if (this.isLeader) this.saveLeaderOrder();
+      if (this.isLeader || this.enemiesAhead.length * (random(0, 10) > 7) >= 1 || (this.health / this.fullHealth) < 0.5) this.saveLeaderOrder();
       this.attack();
     }
 
