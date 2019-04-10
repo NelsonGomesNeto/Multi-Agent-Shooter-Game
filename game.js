@@ -18,6 +18,7 @@ var people;
 var idCounter = 1;
 
 var AIEnemy, isTargeting = false, backupPosition;
+var logStrings = [], logCounter = 0; let logCooldown = 50;
 
 function setup() {
   spawnRedColor = color(224, 102, 102);
@@ -53,6 +54,15 @@ function updateLeader() {
       people[i].isLeader = true;
       break;
     }
+}
+
+function keyReleased() {
+  if (key == 'p') saveStrings(logStrings, "log.txt");
+}
+
+function printLog(string) {
+  console.log(string);
+  logStrings.push(string);
 }
 
 function draw() {

@@ -71,7 +71,9 @@ class Person {
     let i = int(this.position.y / lineSize), j = int(this.position.x / columnSize);
     // if (!this.path || this.pathID >= (this.path.length - 1)) {
     if (!this.path || this.pathID >= (this.path.length - 1) || (++ this.followPathCounter) % followPathCooldown == 0) {
-      let targetPosition = (isTargeting*5 + random(0, 5) > 4) ? backupPosition : createVector(random(0, width - 100), random(0, height - 100));
+      let accepted = (isTargeting*5 + random(0, 5) > 4);
+      printLog(accepted ? "Aceitou dar suporte" : "Rejeitou dar suporte");
+      let targetPosition = accepted ? backupPosition : createVector(random(0, width - 100), random(0, height - 100));
       this.path = new PathFinder(this.position.copy(), targetPosition).findPath();
       this.pathID = -1;
     } else if (this.pathID >= 0 && (i !== this.target.i || j !== this.target.j)) {
@@ -129,6 +131,7 @@ class Person {
     } else {
       isTargeting = false;
     }
+    if (++ logCounter % logCooldown == 0) printLog(this.id.toString() + " pediu por suporte em (" + backupPosition.x.toString() + ", " + backupPosition.y.toString() + ")");
   }
 
   update() {
@@ -145,6 +148,7 @@ class Person {
       this.followPath();
       this.healMates();
       if (this.isLeader || this.enemiesAhead.length * (random(0, 10) > 7) >= 1 || (this.health / this.fullHealth) < 0.5) this.saveLeaderOrder();
+      if (this.health / this.fullHealth < 0.5 && ++ logCounter % logCooldown == 0) printLog(this.id.toString() + " está com pouca vida");
       this.attack();
     }
 
