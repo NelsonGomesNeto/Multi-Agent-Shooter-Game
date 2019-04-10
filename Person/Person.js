@@ -151,6 +151,7 @@ class Person {
       this.followPath();
       this.healMates();
       if (this.isLeader || this.enemiesAhead.length * (random(0, 10) > 7) >= 1 || (this.health / this.fullHealth) < 0.5) this.saveLeaderOrder();
+      if (this.enemiesAhead.length > 0 && ++ logCounter % logCooldown == 0) printLog(this.id.toString() + " encontrou " + this.enemiesAhead.length.toString() + " inimigos");
       if (this.health / this.fullHealth < 0.5 && ++ logCounter % logCooldown == 0) printLog(this.id.toString() + " está com pouca vida, precisa de cura");
       this.attack();
     }
