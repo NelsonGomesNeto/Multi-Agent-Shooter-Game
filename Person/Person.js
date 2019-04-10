@@ -23,6 +23,7 @@ class Person {
     this.target = new Position(-1, -1);
     this.enemiesAhead = new Array();
     this.isLeader = false;
+    this.isHealer = false;
     /* Extended classes must define:
       color, damage, health, fullHealth, cooldown, bulletWillHit (function)
     */
@@ -72,7 +73,8 @@ class Person {
     // if (!this.path || this.pathID >= (this.path.length - 1)) {
     if (!this.path || this.pathID >= (this.path.length - 1) || (++ this.followPathCounter) % followPathCooldown == 0) {
       let accepted = (isTargeting*5 + random(0, 5) > 4);
-      printLog(accepted ? "Aceitou dar suporte" : "Rejeitou dar suporte");
+      let typeString = this.isHealer ? " suporte" : " reforço";
+      printLog(this.id.toString() + " " + (accepted ? "pode dar" : "não pode dar") + typeString + " a " + targetSupportId);
       let targetPosition = accepted ? backupPosition : createVector(random(0, width - 100), random(0, height - 100));
       this.path = new PathFinder(this.position.copy(), targetPosition).findPath();
       this.pathID = -1;
@@ -128,10 +130,11 @@ class Person {
     if ((this.health / this.fullHealth) > 0.5 && this.enemiesAhead.length) {
       backupPosition = this.enemiesAhead[0].copy();
       isTargeting = true;
+      targetSupportId = this.id;
     } else {
       isTargeting = false;
     }
-    if (++ logCounter % logCooldown == 0) printLog(this.id.toString() + " pediu por suporte em (" + backupPosition.x.toString() + ", " + backupPosition.y.toString() + ")");
+    if (++ logCounter % logCooldown == 0) printLog(this.id.toString() + " pediu ajuda em (" + int(backupPosition.x).toString() + ", " + int(backupPosition.y).toString() + ")");
   }
 
   update() {
@@ -148,7 +151,7 @@ class Person {
       this.followPath();
       this.healMates();
       if (this.isLeader || this.enemiesAhead.length * (random(0, 10) > 7) >= 1 || (this.health / this.fullHealth) < 0.5) this.saveLeaderOrder();
-      if (this.health / this.fullHealth < 0.5 && ++ logCounter % logCooldown == 0) printLog(this.id.toString() + " está com pouca vida");
+      if (this.health / this.fullHealth < 0.5 && ++ logCounter % logCooldown == 0) printLog(this.id.toString() + " está com pouca vida, precisa de cura");
       this.attack();
     }
 

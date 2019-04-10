@@ -17,8 +17,8 @@ var lineSize, columnSize;
 var people;
 var idCounter = 1;
 
-var AIEnemy, isTargeting = false, backupPosition;
-var logStrings = [], logCounter = 0; let logCooldown = 50;
+var AIEnemy, isTargeting = false, targetSupportId = 0, backupPosition;
+var logStrings = [], logCounter = 0; let logCooldown = 100;
 
 function setup() {
   spawnRedColor = color(224, 102, 102);

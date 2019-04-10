@@ -6,6 +6,7 @@ class Healer extends Person {
     this.health = 1.5 * maxHealth;
     this.fullHealth = this.health;
     this.cooldown = 20;
+    this.isHealer = true;
   }
 
   heal() {
